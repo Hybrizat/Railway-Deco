@@ -68,6 +68,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                     .createCompositeState(false));
 
     private TextureAtlasSprite sprite;
+    private TextureAtlasSprite whiteSprite;
 
     public CrossingGateFullBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -103,14 +104,16 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                 for (JsonElement boneEl : geo.getAsJsonArray("bones")) {
                     JsonObject bone = boneEl.getAsJsonObject();
                     String boneName = bone.get("name").getAsString().toLowerCase(Locale.ROOT);
-                    if (boneName.startsWith("meiban")) {
-                        // ??????????????
+                    if (boneName.startsWith("meiban") || boneName.startsWith("lightlon")
+                            || boneName.startsWith("lightloff") || boneName.startsWith("lightron")
+                            || boneName.startsWith("lightroff")) {
+                        // ??/??????????????????????????
                         continue;
                     }
                     boolean isKeihyo = boneName.startsWith("keihyo");
-                    boolean isLightOn = boneName.startsWith("lightlon") || boneName.startsWith("lightron");
-                    boolean isLightOff = boneName.startsWith("lightloff") || boneName.startsWith("lightroff");
-                    boolean isLeft = boneName.startsWith("lightlon") || boneName.startsWith("lightloff");
+                    boolean isLightOn = false;
+                    boolean isLightOff = false;
+                    boolean isLeft = false;
                     JsonElement cubesEl = bone.get("cubes");
                     if (cubesEl == null || !cubesEl.isJsonArray()) {
                         continue;
@@ -249,31 +252,66 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         for (Cube cube : STATIC_CUBES) {
             drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F);
         }
-        // ????????????? <-> ????????????????/??????
-        if (powered && phaseA) {
-            for (Cube cube : LIGHT_ON_LEFT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-        } else if (powered) {
-            for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_ON_RIGHT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
-            }
-        } else {
-            for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-        }
+        // ????????????????????????? ? ???/???
+        // ???? <-> ?????????????
+        boolean leftLit = powered && phaseA;
+        boolean rightLit = powered && !phaseA;
+        drawLens(vertices, pose, -7.2F, -6.3F, leftLit ? LightTexture.FULL_BRIGHT : packedLight, packedOverlay, leftLit);
+        drawLens(vertices, pose, 6.3F, 7.2F, rightLit ? LightTexture.FULL_BRIGHT : packedLight, packedOverlay, rightLit);
 
         pose.popPose();
+    }
+
+    /** ??? x ?????????z 0.55~0.62???????? */
+    private void drawLens(VertexConsumer vertices, PoseStack pose, float x0, float x1,
+                          int packedLight, int packedOverlay, boolean lit) {
+        float y0 = 38.25F, y1 = 40.0F, z0 = 0.55F, z1 = 0.62F;
+        float r = lit ? 1.0F : 0.0F;
+        float g = 0.0F, b = 0.0F;
+        // ???+Z??????
+        quadLens(vertices, pose, packedLight, packedOverlay, 0, 0, 1,
+                x0, y0, z1, x1, y0, z1, x1, y1, z1, x0, y1, z1, r, g, b);
+        // ???-Z?
+        quadLens(vertices, pose, packedLight, packedOverlay, 0, 0, -1,
+                x1, y0, z0, x0, y0, z0, x0, y1, z0, x1, y1, z0, r, g, b);
+        // ???????????
+        quadLens(vertices, pose, packedLight, packedOverlay, 0, 1, 0,
+                x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, r, g, b);
+        quadLens(vertices, pose, packedLight, packedOverlay, 0, -1, 0,
+                x0, y0, z1, x0, y0, z0, x1, y0, z0, x1, y0, z1, r, g, b);
+        quadLens(vertices, pose, packedLight, packedOverlay, 1, 0, 0,
+                x1, y0, z1, x1, y1, z1, x1, y1, z0, x1, y0, z0, r, g, b);
+        quadLens(vertices, pose, packedLight, packedOverlay, -1, 0, 0,
+                x0, y0, z0, x0, y1, z0, x0, y1, z1, x0, y0, z1, r, g, b);
+    }
+
+    private void quadLens(VertexConsumer vertices, PoseStack pose, int packedLight, int packedOverlay,
+                          float nx, float ny, float nz,
+                          float x0, float y0, float z0, float x1, float y1, float z1,
+                          float x2, float y2, float z2, float x3, float y3, float z3,
+                          float r, float g, float b) {
+        // ??????????????????????
+        float u = 0.5F, v = 0.5F;
+        addVertexLens(vertices, pose, x0, y0, z0, u, v, nx, ny, nz, packedLight, packedOverlay, r, g, b);
+        addVertexLens(vertices, pose, x1, y1, z1, u, v, nx, ny, nz, packedLight, packedOverlay, r, g, b);
+        addVertexLens(vertices, pose, x2, y2, z2, u, v, nx, ny, nz, packedLight, packedOverlay, r, g, b);
+        addVertexLens(vertices, pose, x3, y3, z3, u, v, nx, ny, nz, packedLight, packedOverlay, r, g, b);
+    }
+
+    private void addVertexLens(VertexConsumer vertices, PoseStack pose,
+                               float x, float y, float z, float u, float v,
+                               float nx, float ny, float nz, int packedLight, int packedOverlay,
+                               float r, float g, float b) {
+        if (whiteSprite == null) {
+            whiteSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    .apply(ResourceLocation.withDefaultNamespace("block/white_concrete"));
+        }
+        vertices.addVertex(pose.last(), x, y, z)
+                .setUv(whiteSprite.getU(u), whiteSprite.getV(v))
+                .setColor(r, g, b, 1.0F)
+                .setNormal(pose.last(), nx, ny, nz)
+                .setLight(packedLight)
+                .setOverlay(packedOverlay);
     }
 
     private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay,
