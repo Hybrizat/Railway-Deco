@@ -82,6 +82,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                         // ??????????????
                         continue;
                     }
+                    boolean isKeihyo = boneName.startsWith("keihyo");
                     boolean isLightOn = boneName.startsWith("lightlon") || boneName.startsWith("lightron");
                     boolean isLightOff = boneName.startsWith("lightloff") || boneName.startsWith("lightroff");
                     boolean isLeft = boneName.startsWith("lightlon") || boneName.startsWith("lightloff");
@@ -96,6 +97,14 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                         float[] size = readFloat3(c, "size");
                         float[] pivot = readFloat3(c, "pivot");
                         float[] rotation = readFloat3(c, "rotation");
+                        // ?????keihyo????????? X ??????????????
+                        // ??? x/z ??????????????
+                        if (isKeihyo) {
+                            origin = new float[]{origin[2], origin[1], origin[0]};
+                            size = new float[]{size[2], size[1], size[0]};
+                            pivot = new float[]{pivot[2], pivot[1], pivot[0]};
+                            rotation = new float[]{0.0F, 0.0F, rotation[0]};
+                        }
                         System.arraycopy(origin, 0, cube.origin, 0, 3);
                         System.arraycopy(size, 0, cube.size, 0, 3);
                         System.arraycopy(pivot, 0, cube.pivot, 0, 3);
@@ -109,7 +118,18 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                             JsonObject face = faceEl.getAsJsonObject();
                             float[] uvOrigin = readFloat2(face, "uv");
                             float[] uvSize = readFloat2(face, "uv_size");
-                            cube.faces.add(new String[]{dir});
+                            String mappedDir = dir;
+                            if (isKeihyo) {
+                                // x<->z ????north<->west, south<->east
+                                mappedDir = switch (dir) {
+                                    case "north" -> "west";
+                                    case "south" -> "east";
+                                    case "east" -> "south";
+                                    case "west" -> "north";
+                                    default -> dir;
+                                };
+                            }
+                            cube.faces.add(new String[]{mappedDir});
                             cube.faceUvs.add(new float[]{uvOrigin[0], uvOrigin[1], uvOrigin[0] + uvSize[0], uvOrigin[1] + uvSize[1]});
                         }
                         // ????????

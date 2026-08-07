@@ -25,7 +25,13 @@ public class CrossingGateBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CrossingGateBlockEntity blockEntity) {
-        if (state.getValue(CrossingGateBlock.POWERED) && level.getGameTime() % FLASH_PERIOD == 0) {
+        // ????????????????????????
+        boolean powered = level.getBestNeighborSignal(pos) > 0;
+        if (powered != state.getValue(CrossingGateBlock.POWERED)) {
+            level.setBlock(pos, state.setValue(CrossingGateBlock.POWERED, powered), 3);
+            return;
+        }
+        if (powered && level.getGameTime() % FLASH_PERIOD == 0) {
             level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 0.6F, 1.0F);
         }
     }
