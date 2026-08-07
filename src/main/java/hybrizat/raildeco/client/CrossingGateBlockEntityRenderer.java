@@ -136,9 +136,14 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         pose.popPose();
     }
 
+    /** ?????? cullface ?????? null??????????????????? */
+    private static final Direction[] RENDER_DIRECTIONS = {
+            null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST
+    };
+
     private int countQuads(BakedModel model, BlockState state) {
         int count = 0;
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : RENDER_DIRECTIONS) {
             random.setSeed(42L);
             count += model.getQuads(state, direction, random, ModelData.EMPTY, null).size();
         }
@@ -147,7 +152,7 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
 
     private void renderBakedModel(BakedModel model, BlockState state, PoseStack pose, VertexConsumer vertices,
                                   int packedLight, int packedOverlay) {
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : RENDER_DIRECTIONS) {
             random.setSeed(42L);
             for (BakedQuad quad : model.getQuads(state, direction, random, ModelData.EMPTY, null)) {
                 vertices.putBulkData(pose.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, packedOverlay, true);
