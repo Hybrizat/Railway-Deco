@@ -4,6 +4,13 @@
     "particle": "rail_deco:block/turnstile"
   },
   "elements": [
-    { "from": [0, 0, 0], "to": [16, 16, 16], "faces": { "north": { "uv": [0,0,512,512], "texture": "#gate" }, "south": { "uv": [0,0,512,512], "texture": "#gate" }, "east": { "uv": [0,0,512,512], "texture": "#gate" }, "west": { "uv": [0,0,512,512], "texture": "#gate" }, "up": { "uv": [0,0,512,512], "texture": "#gate" }, "down": { "uv": [0,0,512,512], "texture": "#gate" } } }
+    { "from": [0, 0, 0], "to": [16, 16, 16], "faces": {
+      "north": { "uv": [0, 0, 96, 208], "texture": "#gate" },
+      "south": { "uv": [0, 0, 96, 208], "texture": "#gate" },
+      "east": { "uv": [0, 0, 96, 208], "texture": "#gate" },
+      "west": { "uv": [0, 0, 96, 208], "texture": "#gate" },
+      "up": { "uv": [0, 0, 96, 208], "texture": "#gate" },
+      "down": { "uv": [0, 0, 96, 208], "texture": "#gate" }
+    } }
   ]
 }

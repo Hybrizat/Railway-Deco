@@ -1,8 +1,8 @@
-package com.hybri.raildeco;
+package hybrizat.raildeco;
 
-import com.hybri.raildeco.block.CrossingGateBlock;
-import com.hybri.raildeco.block.PlatformEdgeBlock;
-import com.hybri.raildeco.block.TicketGateBlock;
+import hybrizat.raildeco.block.CrossingGateBlock;
+import hybrizat.raildeco.block.PlatformEdgeBlock;
+import hybrizat.raildeco.block.TicketGateBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;

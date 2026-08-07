@@ -1,7 +1,7 @@
-package com.hybri.raildeco.client;
+package hybrizat.raildeco.client;
 
-import com.hybri.raildeco.ModBlockEntityTypes;
-import com.hybri.raildeco.RailDeco;
+import hybrizat.raildeco.ModBlockEntityTypes;
+import hybrizat.raildeco.RailDeco;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;

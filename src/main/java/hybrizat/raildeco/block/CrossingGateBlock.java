@@ -1,6 +1,6 @@
-package com.hybri.raildeco.block;
+package hybrizat.raildeco.block;
 
-import com.hybri.raildeco.block.entity.CrossingGateBlockEntity;
+import hybrizat.raildeco.block.entity.CrossingGateBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,7 +1,7 @@
-package com.hybri.raildeco.block.entity;
+package hybrizat.raildeco.block.entity;
 
-import com.hybri.raildeco.ModBlockEntityTypes;
-import com.hybri.raildeco.block.CrossingGateBlock;
+import hybrizat.raildeco.ModBlockEntityTypes;
+import hybrizat.raildeco.block.CrossingGateBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

@@ -1,4 +1,4 @@
-package com.hybri.raildeco.block;
+package hybrizat.raildeco.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -9,17 +9,23 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * 站台边缘方块：低矮的黄色盲道/边界条。
+ * JR 风格闸机（纯装饰）。
+ * 两个闸机底座分列左右，中间为通行通道，闸门保持开启状态。
  */
-public class PlatformEdgeBlock extends HorizontalDirectionalBlock {
-    public static final MapCodec<PlatformEdgeBlock> CODEC = simpleCodec(PlatformEdgeBlock::new);
+public class TicketGateBlock extends HorizontalDirectionalBlock {
+    public static final MapCodec<TicketGateBlock> CODEC = simpleCodec(TicketGateBlock::new);
 
-    private static final VoxelShape SHAPE = box(0, 0, 0, 16, 3, 16);
+    // 与 Metropolis 闸机开放形态一致：仅两侧立柱，中间可通行
+    private static final VoxelShape SHAPE = Shapes.or(
+        box(0, 0, 0, 2, 24, 16),  // 左侧立柱
+        box(14, 0, 0, 16, 24, 16) // 右侧立柱
+    );
 
-    public PlatformEdgeBlock(Properties properties) {
+    public TicketGateBlock(Properties properties) {
         super(properties);
     }
 

@@ -1,6 +1,6 @@
-package com.hybri.raildeco;
+package hybrizat.raildeco;
 
-import com.hybri.raildeco.client.ClientModEvents;
+import hybrizat.raildeco.client.ClientModEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 @Mod(RailDeco.MOD_ID)
 public class RailDeco {
     public static final String MOD_ID = "rail_deco";
-    public static final Logger LOGGER = LoggerFactory.getLogger(RailDeco.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger("RailDeco");
 
     public RailDeco(IEventBus modEventBus) {
         ModBlocks.register(modEventBus);

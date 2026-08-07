@@ -4,7 +4,7 @@ plugins {
 }
 
 version = "1.0.0"
-group = "com.hybri"
+group = "hybrizat"
 
 base {
     archivesName = "rail_deco"

@@ -1,4 +1,4 @@
-package com.hybri.raildeco;
+package hybrizat.raildeco;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;

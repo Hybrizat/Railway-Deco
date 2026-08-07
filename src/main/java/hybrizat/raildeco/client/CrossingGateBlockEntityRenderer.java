@@ -1,8 +1,8 @@
-package com.hybri.raildeco.client;
+package hybrizat.raildeco.client;
 
-import com.hybri.raildeco.RailDeco;
-import com.hybri.raildeco.block.CrossingGateBlock;
-import com.hybri.raildeco.block.entity.CrossingGateBlockEntity;
+import hybrizat.raildeco.RailDeco;
+import hybrizat.raildeco.block.CrossingGateBlock;
+import hybrizat.raildeco.block.entity.CrossingGateBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -86,15 +86,18 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
 
         if (!debugLogged) {
             debugLogged = true;
-            RailDeco.LOGGER.info("[RailDeco] crossing gate renderer active at {}; missing={}/{}/{}/{}",
+            int quads = countQuads(lowerModel, state) + countQuads(upperModel, state)
+                + countQuads(armModel, state) + countQuads(lampGlowModel, state);
+            RailDeco.LOGGER.info("[RailDeco] crossing gate renderer active at {}; missing={}/{}/{}/{}; totalQuads={}",
                 blockEntity.getBlockPos(),
                 lowerModel == modelManager.getMissingModel(),
                 upperModel == modelManager.getMissingModel(),
                 armModel == modelManager.getMissingModel(),
-                lampGlowModel == modelManager.getMissingModel());
+                lampGlowModel == modelManager.getMissingModel(),
+                quads);
         }
 
-        VertexConsumer vertices = buffer.getBuffer(RenderType.cutoutMipped());
+        VertexConsumer vertices = buffer.getBuffer(RenderType.solid());
 
         pose.pushPose();
         // 与 blockstate 的 facing 旋转保持一致：模型 +Z 为遮断杆伸出方向
@@ -131,6 +134,15 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         }
 
         pose.popPose();
+    }
+
+    private int countQuads(BakedModel model, BlockState state) {
+        int count = 0;
+        for (Direction direction : Direction.values()) {
+            random.setSeed(42L);
+            count += model.getQuads(state, direction, random, ModelData.EMPTY, null).size();
+        }
+        return count;
     }
 
     private void renderBakedModel(BakedModel model, BlockState state, PoseStack pose, VertexConsumer vertices,
