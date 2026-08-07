@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "arm": "rail_deco:block/crossing_gate_arm",
+    "particle": "rail_deco:block/crossing_gate_arm"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        17,
+        0
+      ],
+      "to": [
+        9,
+        19,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#arm"
+        }
+      }
+    }
+  ]
+}

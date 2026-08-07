@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "rail_deco:ticket_gate",
+    "rail_deco:crossing_gate",
+    "rail_deco:platform_edge"
+  ]
+}

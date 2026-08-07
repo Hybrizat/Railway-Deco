@@ -1,0 +1,7 @@
+{
+  "itemGroup.rail_deco": "铁路装饰",
+  "block.rail_deco.ticket_gate": "闸机",
+  "block.rail_deco.crossing_gate": "踏切遮断机",
+  "block.rail_deco.crossing_gate.tooltip": "右键已放置的遮断机切换遮断杆长度（1-8）。\n红石信号使遮断杆落下、警灯闪烁并响起警铃。",
+  "block.rail_deco.platform_edge": "站台边缘"
+}

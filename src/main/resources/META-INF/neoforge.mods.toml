@@ -1,0 +1,25 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "rail_deco"
+version = "${version}"
+displayName = "Rail Deco"
+authors = "Hybrizat"
+description = '''Railway decoration blocks for vanilla Minecraft.
+铁路装饰方块：JR 风格闸机、红石驱动的踏切遮断机、站台边缘。不依赖 Create 等模组。'''
+
+[[dependencies.rail_deco]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[21.1.206,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.rail_deco]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.1]"
+ordering = "NONE"
+side = "BOTH"

@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "counterweight": "rail_deco:block/crossing_gate_counterweight",
+    "particle": "rail_deco:block/crossing_gate_counterweight"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        17,
+        0
+      ],
+      "to": [
+        9,
+        19,
+        8
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#counterweight"
+        }
+      }
+    }
+  ]
+}
