@@ -1,18 +1,18 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=south": {
       "model": "rail_deco:block/ticket_gate",
       "y": 0
     },
-    "facing=east": {
+    "facing=west": {
       "model": "rail_deco:block/ticket_gate",
       "y": 90
     },
-    "facing=south": {
+    "facing=north": {
       "model": "rail_deco:block/ticket_gate",
       "y": 180
     },
-    "facing=west": {
+    "facing=east": {
       "model": "rail_deco:block/ticket_gate",
       "y": 270
     }

@@ -2,6 +2,7 @@ package hybrizat.raildeco.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -13,16 +14,21 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * JR 风格闸机（纯装饰）。
- * 两个闸机底座分列左右，中间为通行通道，闸门保持开启状态。
+ * JR ??????????????? Metropolis ?????????????
+ * ?????? 1 ??????????
  */
 public class TicketGateBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<TicketGateBlock> CODEC = simpleCodec(TicketGateBlock::new);
 
-    // 与 Metropolis 闸机开放形态一致：仅两侧立柱，中间可通行
-    private static final VoxelShape SHAPE = Shapes.or(
-        box(0, 0, 0, 2, 24, 16),  // 左侧立柱
-        box(14, 0, 0, 16, 24, 16) // 右侧立柱
+    // 1 ??????????/????? X ????
+    private static final VoxelShape SHAPE_NORTH_SOUTH = Shapes.or(
+        box(0, 0, 0, 2, 16, 16),  // ????
+        box(14, 0, 0, 16, 16, 16) // ????
+    );
+    // ???/??????? Z ?????? blockstate y ???
+    private static final VoxelShape SHAPE_EAST_WEST = Shapes.or(
+        box(0, 0, 0, 16, 16, 2),
+        box(0, 0, 14, 16, 16, 16)
     );
 
     public TicketGateBlock(Properties properties) {
@@ -46,6 +52,7 @@ public class TicketGateBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        Direction facing = state.getValue(FACING);
+        return facing == Direction.NORTH || facing == Direction.SOUTH ? SHAPE_NORTH_SOUTH : SHAPE_EAST_WEST;
     }
 }
