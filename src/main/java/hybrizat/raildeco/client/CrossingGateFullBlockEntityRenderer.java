@@ -4,9 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
+import net.minecraft.client.renderer.RenderStateShard;
 import hybrizat.raildeco.RailDeco;
 import hybrizat.raildeco.block.CrossingGateFullBlock;
 import hybrizat.raildeco.block.entity.CrossingGateFullBlockEntity;
@@ -46,6 +49,26 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private static final List<Cube> LIGHT_OFF_LEFT = new ArrayList<>();
     private static final List<Cube> LIGHT_OFF_RIGHT = new ArrayList<>();
     private static boolean parsed = false;
+
+    /** ?????? cutout ???????/??????????????????????? */
+    private static final RenderType NO_CULL_CUTOUT = RenderType.create(
+            "rail_deco_cr1_cutout_nocull",
+            DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderType.RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
+                    .setTransparencyState(RenderType.NO_TRANSPARENCY)
+                    .setCullState(RenderType.NO_CULL)
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .setOverlayState(RenderType.OVERLAY)
+                    .createCompositeState(false));
+
+    /** ??????????? (80,11) ?? */
+    private static final float[] BLACK_UV = {80.0F / 128.0F, 11.0F / 128.0F, 82.0F / 128.0F, 13.0F / 128.0F};
 
     private TextureAtlasSprite sprite;
 
@@ -104,12 +127,19 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                             size = new float[]{size[2], size[1], size[0]};
                             pivot = new float[]{pivot[2], pivot[1], pivot[0]};
                             rotation = new float[]{0.0F, 0.0F, rotation[0]};
+                            // ????? 0.05 -> 0.5????????
+                            if (size[2] < 0.5F) {
+                                float delta = (0.5F - size[2]) / 2.0F;
+                                origin[2] -= delta;
+                                size[2] = 0.5F;
+                            }
                         }
                         System.arraycopy(origin, 0, cube.origin, 0, 3);
                         System.arraycopy(size, 0, cube.size, 0, 3);
                         System.arraycopy(pivot, 0, cube.pivot, 0, 3);
                         System.arraycopy(rotation, 0, cube.rotation, 0, 3);
                         JsonObject uv = c.getAsJsonObject("uv");
+                        float[] keihyoStripeUv = null;
                         for (String dir : new String[]{"north", "east", "south", "west", "up", "down"}) {
                             JsonElement faceEl = uv.get(dir);
                             if (faceEl == null) {
@@ -128,6 +158,15 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                                     case "west" -> "north";
                                     default -> dir;
                                 };
+                                // ????????????????????east???????????
+                                if (dir.equals("east")) {
+                                    keihyoStripeUv = new float[]{uvOrigin[0], uvOrigin[1], uvOrigin[0] + uvSize[0], uvOrigin[1] + uvSize[1]};
+                                } else if (dir.equals("west")) {
+                                    if (keihyoStripeUv != null) {
+                                        uvOrigin = new float[]{keihyoStripeUv[0], keihyoStripeUv[1]};
+                                        uvSize = new float[]{keihyoStripeUv[2] - keihyoStripeUv[0], keihyoStripeUv[3] - keihyoStripeUv[1]};
+                                    }
+                                }
                             }
                             cube.faces.add(new String[]{mappedDir});
                             cube.faceUvs.add(new float[]{uvOrigin[0], uvOrigin[1], uvOrigin[0] + uvSize[0], uvOrigin[1] + uvSize[1]});
@@ -195,7 +234,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
 
         Direction facing = blockEntity.getBlockState().getValue(CrossingGateFullBlock.FACING);
 
-        VertexConsumer vertices = buffer.getBuffer(RenderType.cutout());
+        VertexConsumer vertices = buffer.getBuffer(NO_CULL_CUTOUT);
 
         pose.pushPose();
         // ??? +X ? ?????????????FACING ????
@@ -205,36 +244,36 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
         for (Cube cube : STATIC_CUBES) {
-            drawCube(vertices, pose, cube, packedLight, packedOverlay);
+            drawCube(vertices, pose, cube, packedLight, packedOverlay, false);
         }
         // ????????????? <-> ?????????????
         if (powered && phaseA) {
             for (Cube cube : LIGHT_ON_LEFT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay);
+                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, false);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
             }
         } else if (powered) {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
             }
             for (Cube cube : LIGHT_ON_RIGHT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay);
+                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, false);
             }
         } else {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
             }
         }
 
         pose.popPose();
     }
 
-    private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay) {
+    private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay, boolean forceBlack) {
         float[] o = cube.origin, s = cube.size, p = cube.pivot, r = cube.rotation;
         // 8 ??????????
         float[][] corners = new float[8][3];
@@ -260,6 +299,9 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         for (int i = 0; i < cube.faces.size(); i++) {
             String dir = cube.faces.get(i)[0];
             float[] uv = cube.faceUvs.get(i);
+            if (forceBlack) {
+                uv = BLACK_UV;
+            }
             // u0,v0 = ????????? 0~16 ?? UV??? / 128?2048 ???
             float u0 = uv[0] / 128.0F, v0 = uv[1] / 128.0F;
             float u1 = uv[2] / 128.0F, v1 = uv[3] / 128.0F;
