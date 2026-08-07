@@ -19,9 +19,9 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 /**
  * 踏切遮断机渲染器。
@@ -29,6 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
  * <p>动画完全在客户端根据方块状态与游戏时间推导，无需同步 NBT：
  * 当客户端观察到 {@code POWERED} 状态翻转时记录时间戳，之后按
  * 4.0s（落下）/ 6.1s（抬起）插值计算遮断杆角度。
+ *
+ * <p>模型坐标限制：Minecraft 方块模型元素必须在 0~16 之间，
+ * 因此立柱拆成上下两段、灯组单独建模，由本渲染器拼装。
  */
 public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<CrossingGateBlockEntity> {
     /** 遮断杆完全落下时的角度（模型空间，杆沿 +Z 方向伸出）。 */
@@ -87,6 +90,8 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
 
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         BakedModel poleModel = modelManager.getModel(standaloneModel("block/crossing_gate_pole"));
+        BakedModel poleTopModel = modelManager.getModel(standaloneModel("block/crossing_gate_pole_top"));
+        BakedModel lampUnitModel = modelManager.getModel(standaloneModel("block/crossing_gate_lamp_unit"));
         BakedModel armModel = modelManager.getModel(standaloneModel("block/crossing_gate_arm"));
         BakedModel counterweightModel = modelManager.getModel(standaloneModel("block/crossing_gate_counterweight"));
         BakedModel lampGlowModel = modelManager.getModel(standaloneModel("block/crossing_gate_lamp_glow"));
@@ -101,8 +106,20 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         // 模型 JSON 使用 16px = 1 格坐标系
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
-        // 立柱 + 灯罩 + 警铃（静态）
+        // 立柱下半段
         renderBakedModel(poleModel, state, pose, vertices, packedLight, packedOverlay);
+
+        // 立柱上半段
+        pose.pushPose();
+        pose.translate(0.0F, 16.0F, 0.0F);
+        renderBakedModel(poleTopModel, state, pose, vertices, packedLight, packedOverlay);
+        pose.popPose();
+
+        // 灯组（灯罩 + 警铃），整体位于立柱顶部
+        pose.pushPose();
+        pose.translate(0.0F, 28.0F, 0.0F);
+        renderBakedModel(lampUnitModel, state, pose, vertices, packedLight, packedOverlay);
+        pose.popPose();
 
         // 遮断杆：绕铰点沿 X 轴向下旋转，并按 LENGTH 拉长
         pose.pushPose();

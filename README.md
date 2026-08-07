@@ -49,3 +49,5 @@
 ## 许可
 
 MIT License。
+
+闸机方块正面贴图复用自 [Metropolis](https://github.com/DoveCotMC/Metropolis)（MIT License，	icket_gate_0.png）。

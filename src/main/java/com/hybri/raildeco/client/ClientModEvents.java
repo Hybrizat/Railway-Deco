@@ -20,6 +20,8 @@ public final class ClientModEvents {
 
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(standaloneModel("block/crossing_gate_pole"));
+        event.register(standaloneModel("block/crossing_gate_pole_top"));
+        event.register(standaloneModel("block/crossing_gate_lamp_unit"));
         event.register(standaloneModel("block/crossing_gate_arm"));
         event.register(standaloneModel("block/crossing_gate_counterweight"));
         event.register(standaloneModel("block/crossing_gate_lamp_glow"));
