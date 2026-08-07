@@ -1,5 +1,6 @@
 package com.hybri.raildeco.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -14,10 +15,17 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * 站台边缘方块：低矮的黄色盲道/边界条。
  */
 public class PlatformEdgeBlock extends HorizontalDirectionalBlock {
+    public static final MapCodec<PlatformEdgeBlock> CODEC = simpleCodec(PlatformEdgeBlock::new);
+
     private static final VoxelShape SHAPE = box(0, 0, 0, 16, 3, 16);
 
     public PlatformEdgeBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override

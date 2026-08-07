@@ -1,8 +1,11 @@
 package com.hybri.raildeco;
 
+import com.hybri.raildeco.client.ClientModEvents;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +21,10 @@ public class RailDeco {
         ModBlocks.register(modEventBus);
         ModBlockEntityTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(ClientModEvents::registerRenderers);
+            modEventBus.addListener(ClientModEvents::registerAdditionalModels);
+        }
     }
 
     public static ResourceLocation id(String path) {

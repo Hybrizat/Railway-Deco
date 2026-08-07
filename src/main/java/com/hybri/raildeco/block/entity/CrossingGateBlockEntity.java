@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 
 /**
  * 踏切遮断机方块实体：服务端负责警铃，渲染器在客户端负责动画与警灯。
@@ -27,13 +26,7 @@ public class CrossingGateBlockEntity extends BlockEntity {
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CrossingGateBlockEntity blockEntity) {
         if (state.getValue(CrossingGateBlock.POWERED) && level.getGameTime() % FLASH_PERIOD == 0) {
-            level.playSound(null, pos, SoundEvents.BELL, SoundSource.BLOCKS, 0.6F, 1.0F);
+            level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 0.6F, 1.0F);
         }
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        int length = getBlockState().getValue(CrossingGateBlock.LENGTH);
-        return AABB.unitCubeFromLowerCorner(getBlockPos()).inflate(length + 1.0, 2.0, length + 1.0);
     }
 }

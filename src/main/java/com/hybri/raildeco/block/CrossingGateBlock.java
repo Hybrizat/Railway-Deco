@@ -1,6 +1,7 @@
 package com.hybri.raildeco.block;
 
 import com.hybri.raildeco.block.entity.CrossingGateBlockEntity;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -39,6 +40,8 @@ import java.util.List;
  * </ul>
  */
 public class CrossingGateBlock extends HorizontalDirectionalBlock implements EntityBlock {
+    public static final MapCodec<CrossingGateBlock> CODEC = simpleCodec(CrossingGateBlock::new);
+
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
     public static final IntegerProperty LENGTH = IntegerProperty.create("length", 1, 8);
 
@@ -48,6 +51,11 @@ public class CrossingGateBlock extends HorizontalDirectionalBlock implements Ent
             .setValue(FACING, Direction.NORTH)
             .setValue(POWERED, false)
             .setValue(LENGTH, 2));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -93,7 +101,7 @@ public class CrossingGateBlock extends HorizontalDirectionalBlock implements Ent
             int length = state.getValue(LENGTH);
             length = length >= 8 ? 1 : length + 1;
             level.setBlock(pos, state.setValue(LENGTH, length), 3);
-            level.playSound(null, pos, SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.8F, 1.0F);
+            level.playSound(null, pos, SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.8F, 1.0F);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

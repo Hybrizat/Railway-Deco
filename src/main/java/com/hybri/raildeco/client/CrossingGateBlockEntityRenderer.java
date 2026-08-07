@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
@@ -17,6 +18,8 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -38,14 +41,12 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
     private static final float PIVOT_Y = 18.0F;
     private static final float PIVOT_Z = 8.0F;
 
-    @SuppressWarnings("unused")
-    private final BlockEntityRendererProvider.Context context;
+    private final RandomSource random = RandomSource.create();
 
     private long lastChangeTick = -1L;
     private boolean lastPowered = false;
 
     public CrossingGateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
     }
 
     @Override
@@ -91,7 +92,6 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         BakedModel lampGlowModel = modelManager.getModel(standaloneModel("block/crossing_gate_lamp_glow"));
 
         VertexConsumer vertices = buffer.getBuffer(RenderType.cutoutMipped());
-        int white = 0xFFFFFFFF;
 
         pose.pushPose();
         // 与 blockstate 的 facing 旋转保持一致：模型 +Z 为遮断杆伸出方向
@@ -102,14 +102,14 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
         // 立柱 + 灯罩 + 警铃（静态）
-        poleModel.renderToBuffer(pose, vertices, packedLight, packedOverlay, white);
+        renderBakedModel(poleModel, state, pose, vertices, packedLight, packedOverlay);
 
         // 遮断杆：绕铰点沿 X 轴向下旋转，并按 LENGTH 拉长
         pose.pushPose();
         pose.translate(PIVOT_X, PIVOT_Y, PIVOT_Z);
         pose.mulPose(Axis.XP.rotationDegrees(angle));
         pose.scale(1.0F, 1.0F, length);
-        armModel.renderToBuffer(pose, vertices, packedLight, packedOverlay, white);
+        renderBakedModel(armModel, state, pose, vertices, packedLight, packedOverlay);
         pose.popPose();
 
         // 配重：位于铰点后方（-Z），反向小幅摆动
@@ -117,27 +117,30 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         pose.translate(PIVOT_X, PIVOT_Y, PIVOT_Z);
         pose.mulPose(Axis.XP.rotationDegrees(angle * COUNTERWEIGHT_RATIO));
         pose.translate(0.0F, 0.0F, -8.0F);
-        counterweightModel.renderToBuffer(pose, vertices, packedLight, packedOverlay, white);
+        renderBakedModel(counterweightModel, state, pose, vertices, packedLight, packedOverlay);
         pose.popPose();
 
         // 警灯：通电时左右交替闪烁（全亮度）
         if (powered) {
             boolean leftOn = ((long) time / CrossingGateBlockEntity.FLASH_PERIOD) % 2 == 0;
-            if (leftOn) {
-                renderLamp(pose, vertices, packedOverlay, lampGlowModel, 3.3F);
-            } else {
-                renderLamp(pose, vertices, packedOverlay, lampGlowModel, 11.3F);
-            }
+            float lampX = leftOn ? 3.3F : 11.3F;
+            pose.pushPose();
+            pose.translate(lampX, 30.6F, 7.0F);
+            renderBakedModel(lampGlowModel, state, pose, vertices, LightTexture.FULL_BRIGHT, packedOverlay);
+            pose.popPose();
         }
 
         pose.popPose();
     }
 
-    private static void renderLamp(PoseStack pose, VertexConsumer vertices, int packedOverlay, BakedModel lampGlowModel, float x) {
-        pose.pushPose();
-        pose.translate(x, 30.6F, 7.0F);
-        lampGlowModel.renderToBuffer(pose, vertices, LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFFFF);
-        pose.popPose();
+    private void renderBakedModel(BakedModel model, BlockState state, PoseStack pose, VertexConsumer vertices,
+                                  int packedLight, int packedOverlay) {
+        for (Direction direction : Direction.values()) {
+            random.setSeed(42L);
+            for (BakedQuad quad : model.getQuads(state, direction, random, ModelData.EMPTY, null)) {
+                vertices.putBulkData(pose.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, packedOverlay, true);
+            }
+        }
     }
 
     /** 下落：先快后慢。 */
