@@ -3,8 +3,6 @@ package hybrizat.raildeco.block.entity;
 import hybrizat.raildeco.ModBlockEntityTypes;
 import hybrizat.raildeco.block.CrossingGateBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,10 +27,7 @@ public class CrossingGateBlockEntity extends BlockEntity {
         boolean powered = level.getBestNeighborSignal(pos) > 0;
         if (powered != state.getValue(CrossingGateBlock.POWERED)) {
             level.setBlock(pos, state.setValue(CrossingGateBlock.POWERED, powered), 3);
-            return;
-        }
-        if (powered && level.getGameTime() % FLASH_PERIOD == 0) {
-            level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 0.6F, 1.0F);
         }
     }
+
 }

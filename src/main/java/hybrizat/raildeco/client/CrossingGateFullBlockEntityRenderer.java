@@ -67,12 +67,14 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                     .setOverlayState(RenderType.OVERLAY)
                     .createCompositeState(false));
 
-    /** ??????????? (80,11) ?? */
-    private static final float[] BLACK_UV = {80.0F / 128.0F, 11.0F / 128.0F, 82.0F / 128.0F, 13.0F / 128.0F};
-
     private TextureAtlasSprite sprite;
 
     public CrossingGateFullBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(CrossingGateFullBlockEntity blockEntity) {
+        return true;
     }
 
     private static final class Cube {
@@ -243,37 +245,39 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         pose.translate(-0.5, 0.0, -0.5);
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
+        // ?????????
         for (Cube cube : STATIC_CUBES) {
-            drawCube(vertices, pose, cube, packedLight, packedOverlay, false);
+            drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F);
         }
-        // ????????????? <-> ?????????????
+        // ????????????? <-> ????????????????/??????
         if (powered && phaseA) {
             for (Cube cube : LIGHT_ON_LEFT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, false);
+                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
         } else if (powered) {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_ON_RIGHT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, false);
+                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
             }
         } else {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, true);
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
         }
 
         pose.popPose();
     }
 
-    private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay, boolean forceBlack) {
+    private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay,
+                          float tintR, float tintG, float tintB) {
         float[] o = cube.origin, s = cube.size, p = cube.pivot, r = cube.rotation;
         // 8 ??????????
         float[][] corners = new float[8][3];
@@ -299,25 +303,28 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         for (int i = 0; i < cube.faces.size(); i++) {
             String dir = cube.faces.get(i)[0];
             float[] uv = cube.faceUvs.get(i);
-            if (forceBlack) {
-                uv = BLACK_UV;
-            }
             // u0,v0 = ????????? 0~16 ?? UV??? / 128?2048 ???
             float u0 = uv[0] / 128.0F, v0 = uv[1] / 128.0F;
             float u1 = uv[2] / 128.0F, v1 = uv[3] / 128.0F;
             switch (dir) {
                 case "south" -> quad(vertices, pose, packedLight, packedOverlay, 0, 0, 1,
-                        corners[4], corners[5], corners[7], corners[6], u0, v1, u1, v1, u1, v0, u0, v0);
+                        corners[4], corners[5], corners[7], corners[6], u0, v1, u1, v1, u1, v0, u0, v0,
+                        tintR, tintG, tintB);
                 case "north" -> quad(vertices, pose, packedLight, packedOverlay, 0, 0, -1,
-                        corners[1], corners[0], corners[2], corners[3], u0, v1, u1, v1, u1, v0, u0, v0);
+                        corners[1], corners[0], corners[2], corners[3], u0, v1, u1, v1, u1, v0, u0, v0,
+                        tintR, tintG, tintB);
                 case "east" -> quad(vertices, pose, packedLight, packedOverlay, 1, 0, 0,
-                        corners[5], corners[7], corners[3], corners[1], u0, v1, u0, v0, u1, v0, u1, v1);
+                        corners[5], corners[7], corners[3], corners[1], u0, v1, u0, v0, u1, v0, u1, v1,
+                        tintR, tintG, tintB);
                 case "west" -> quad(vertices, pose, packedLight, packedOverlay, -1, 0, 0,
-                        corners[0], corners[2], corners[6], corners[4], u0, v1, u0, v0, u1, v0, u1, v1);
+                        corners[0], corners[2], corners[6], corners[4], u0, v1, u0, v0, u1, v0, u1, v1,
+                        tintR, tintG, tintB);
                 case "up" -> quad(vertices, pose, packedLight, packedOverlay, 0, 1, 0,
-                        corners[2], corners[6], corners[7], corners[3], u0, v0, u0, v1, u1, v1, u1, v0);
+                        corners[2], corners[6], corners[7], corners[3], u0, v0, u0, v1, u1, v1, u1, v0,
+                        tintR, tintG, tintB);
                 case "down" -> quad(vertices, pose, packedLight, packedOverlay, 0, -1, 0,
-                        corners[4], corners[0], corners[1], corners[5], u0, v0, u0, v1, u1, v1, u1, v0);
+                        corners[4], corners[0], corners[1], corners[5], u0, v0, u0, v1, u1, v1, u1, v0,
+                        tintR, tintG, tintB);
             }
         }
     }
@@ -354,19 +361,21 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private void quad(VertexConsumer vertices, PoseStack pose, int packedLight, int packedOverlay,
                       float nx, float ny, float nz,
                       float[] a, float[] b, float[] c, float[] d,
-                      float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3) {
-        addVertex(vertices, pose, a[0], a[1], a[2], u0, v0, nx, ny, nz, packedLight, packedOverlay);
-        addVertex(vertices, pose, b[0], b[1], b[2], u1, v1, nx, ny, nz, packedLight, packedOverlay);
-        addVertex(vertices, pose, c[0], c[1], c[2], u2, v2, nx, ny, nz, packedLight, packedOverlay);
-        addVertex(vertices, pose, d[0], d[1], d[2], u3, v3, nx, ny, nz, packedLight, packedOverlay);
+                      float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3,
+                      float tintR, float tintG, float tintB) {
+        addVertex(vertices, pose, a[0], a[1], a[2], u0, v0, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
+        addVertex(vertices, pose, b[0], b[1], b[2], u1, v1, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
+        addVertex(vertices, pose, c[0], c[1], c[2], u2, v2, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
+        addVertex(vertices, pose, d[0], d[1], d[2], u3, v3, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
     }
 
     private void addVertex(VertexConsumer vertices, PoseStack pose,
                            float x, float y, float z, float u, float v,
-                           float nx, float ny, float nz, int packedLight, int packedOverlay) {
+                           float nx, float ny, float nz, int packedLight, int packedOverlay,
+                           float tintR, float tintG, float tintB) {
         vertices.addVertex(pose.last(), x, y, z)
                 .setUv(sprite.getU(u / 16.0F), sprite.getV(v / 16.0F))
-                .setColor(1.0F, 1.0F, 1.0F, 1.0F)
+                .setColor(tintR, tintG, tintB, 1.0F)
                 .setNormal(pose.last(), nx, ny, nz)
                 .setLight(packedLight)
                 .setOverlay(packedOverlay);

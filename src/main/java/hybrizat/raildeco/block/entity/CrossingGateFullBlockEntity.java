@@ -1,9 +1,9 @@
 package hybrizat.raildeco.block.entity;
 
 import hybrizat.raildeco.ModBlockEntityTypes;
+import hybrizat.raildeco.ModSounds;
 import hybrizat.raildeco.block.CrossingGateFullBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +25,8 @@ public class CrossingGateFullBlockEntity extends BlockEntity {
             return;
         }
         if (powered && level.getGameTime() % FLASH_PERIOD == 0) {
-            level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 0.6F, 1.0F);
+            level.playSound(null, pos, ModSounds.FUMIGIRI.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
         }
     }
+
 }

@@ -20,6 +20,7 @@ public class RailDeco {
     public RailDeco(IEventBus modEventBus) {
         ModBlocks.register(modEventBus);
         ModBlockEntityTypes.register(modEventBus);
+        ModSounds.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientModEvents::registerRenderers);

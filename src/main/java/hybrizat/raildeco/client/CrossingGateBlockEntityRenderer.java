@@ -72,6 +72,11 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
     }
 
     @Override
+    public boolean shouldRenderOffScreen(CrossingGateBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public void render(CrossingGateBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         Level level = blockEntity.getLevel();
