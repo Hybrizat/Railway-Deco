@@ -24,25 +24,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 /**
- * 踏切遮断机渲染器。
- *
- * <p>动画完全在客户端根据方块状态与游戏时间推导，无需同步 NBT：
- * 当客户端观察到 {@code POWERED} 状态翻转时记录时间戳，之后按
- * 4.0s（落下）/ 6.1s（抬起）插值计算遮断杆角度。
+ * 踏切遮断机渲染器（造型参考「大宫铁道踏切 Addon / OCR」）。
  *
  * <p>模型坐标限制：Minecraft 方块模型元素必须在 0~16 之间，
- * 因此立柱拆成上下两段、灯组单独建模，由本渲染器拼装。
+ * 因此立柱/灯罩拆成上下两组模型，由本渲染器拼装。
  */
 public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<CrossingGateBlockEntity> {
     /** 遮断杆完全落下时的角度（模型空间，杆沿 +Z 方向伸出）。 */
     private static final float ARM_CLOSED_ANGLE = 85.0F;
-    /** 配重摆幅比例（参考 Addon：配重反向小幅摆动）。 */
-    private static final float COUNTERWEIGHT_RATIO = 0.2F;
 
-    /** 模型空间中的铰点（像素坐标，16px = 1 格）。 */
-    private static final float PIVOT_X = 8.0F;
-    private static final float PIVOT_Y = 18.0F;
-    private static final float PIVOT_Z = 8.0F;
+    private static boolean debugLogged = false;
 
     private final RandomSource random = RandomSource.create();
 
@@ -71,7 +62,6 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
 
         float progress;
         if (lastChangeTick < 0L) {
-            // 区块加载时不知道状态改变时刻，直接快照到目标姿态
             progress = powered ? 1.0F : 0.0F;
         } else {
             int duration = powered ? CrossingGateBlockEntity.DOWN_TICKS : CrossingGateBlockEntity.UP_TICKS;
@@ -89,12 +79,20 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         Direction facing = state.getValue(CrossingGateBlock.FACING);
 
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
-        BakedModel poleModel = modelManager.getModel(standaloneModel("block/crossing_gate_pole"));
-        BakedModel poleTopModel = modelManager.getModel(standaloneModel("block/crossing_gate_pole_top"));
-        BakedModel lampUnitModel = modelManager.getModel(standaloneModel("block/crossing_gate_lamp_unit"));
+        BakedModel lowerModel = modelManager.getModel(standaloneModel("block/crossing_gate_lower"));
+        BakedModel upperModel = modelManager.getModel(standaloneModel("block/crossing_gate_upper"));
         BakedModel armModel = modelManager.getModel(standaloneModel("block/crossing_gate_arm"));
-        BakedModel counterweightModel = modelManager.getModel(standaloneModel("block/crossing_gate_counterweight"));
         BakedModel lampGlowModel = modelManager.getModel(standaloneModel("block/crossing_gate_lamp_glow"));
+
+        if (!debugLogged) {
+            debugLogged = true;
+            RailDeco.LOGGER.info("[RailDeco] crossing gate renderer active at {}; missing={}/{}/{}/{}",
+                blockEntity.getBlockPos(),
+                lowerModel == modelManager.getMissingModel(),
+                upperModel == modelManager.getMissingModel(),
+                armModel == modelManager.getMissingModel(),
+                lampGlowModel == modelManager.getMissingModel());
+        }
 
         VertexConsumer vertices = buffer.getBuffer(RenderType.cutoutMipped());
 
@@ -103,46 +101,31 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         pose.translate(0.5, 0.0, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(facing.toYRot()));
         pose.translate(-0.5, 0.0, -0.5);
-        // 模型 JSON 使用 16px = 1 格坐标系
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
-        // 立柱下半段
-        renderBakedModel(poleModel, state, pose, vertices, packedLight, packedOverlay);
+        // 底座 + 立柱下半
+        renderBakedModel(lowerModel, state, pose, vertices, packedLight, packedOverlay);
 
-        // 立柱上半段
+        // 立柱上半 + 警灯罩 + 配重（整体上移 12px）
         pose.pushPose();
-        pose.translate(0.0F, 16.0F, 0.0F);
-        renderBakedModel(poleTopModel, state, pose, vertices, packedLight, packedOverlay);
+        pose.translate(0.0F, 12.0F, 0.0F);
+        renderBakedModel(upperModel, state, pose, vertices, packedLight, packedOverlay);
         pose.popPose();
 
-        // 灯组（灯罩 + 警铃），整体位于立柱顶部
+        // 遮断杆：从灯罩前缘伸出，绕 X 轴旋转（+Z 尖端向下），按 LENGTH 拉长
         pose.pushPose();
-        pose.translate(0.0F, 28.0F, 0.0F);
-        renderBakedModel(lampUnitModel, state, pose, vertices, packedLight, packedOverlay);
-        pose.popPose();
-
-        // 遮断杆：绕铰点沿 X 轴向下旋转，并按 LENGTH 拉长
-        pose.pushPose();
-        pose.translate(PIVOT_X, PIVOT_Y, PIVOT_Z);
+        pose.translate(8.0F, 17.5F, 10.0F);
         pose.mulPose(Axis.XP.rotationDegrees(angle));
         pose.scale(1.0F, 1.0F, length);
         renderBakedModel(armModel, state, pose, vertices, packedLight, packedOverlay);
         pose.popPose();
 
-        // 配重：位于铰点后方（-Z），反向小幅摆动
-        pose.pushPose();
-        pose.translate(PIVOT_X, PIVOT_Y, PIVOT_Z);
-        pose.mulPose(Axis.XP.rotationDegrees(angle * COUNTERWEIGHT_RATIO));
-        pose.translate(0.0F, 0.0F, -8.0F);
-        renderBakedModel(counterweightModel, state, pose, vertices, packedLight, packedOverlay);
-        pose.popPose();
-
-        // 警灯：通电时左右交替闪烁（全亮度）
+        // 警灯：通电时左右交替闪烁（全亮度），位于灯罩两侧
         if (powered) {
             boolean leftOn = ((long) time / CrossingGateBlockEntity.FLASH_PERIOD) % 2 == 0;
-            float lampX = leftOn ? 3.3F : 11.3F;
+            float lampX = leftOn ? 3.8F : 11.7F;
             pose.pushPose();
-            pose.translate(lampX, 30.6F, 7.0F);
+            pose.translate(lampX, 18.0F, 8.0F);
             renderBakedModel(lampGlowModel, state, pose, vertices, LightTexture.FULL_BRIGHT, packedOverlay);
             pose.popPose();
         }

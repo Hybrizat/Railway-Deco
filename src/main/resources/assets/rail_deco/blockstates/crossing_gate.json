@@ -1,260 +1,260 @@
 {
-  "variants": {
-    "facing=north,powered=false,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=false,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=north,powered=true,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 0
-    },
-    "facing=east,powered=false,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=false,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=east,powered=true,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 90
-    },
-    "facing=south,powered=false,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=false,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=south,powered=true,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 180
-    },
-    "facing=west,powered=false,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=false,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=1": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=2": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=3": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=4": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=5": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=6": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=7": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    },
-    "facing=west,powered=true,length=8": {
-      "model": "rail_deco:block/crossing_gate_pole",
-      "y": 270
-    }
-  }
+    "variants":  {
+                     "facing=north,powered=false,length=3":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=south,powered=false,length=5":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=west,powered=true,length=7":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=east,powered=false,length=4":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=west,powered=true,length=4":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=south,powered=false,length=1":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=north,powered=true,length=6":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=east,powered=false,length=6":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=west,powered=true,length=3":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=west,powered=false,length=7":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=east,powered=false,length=5":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=east,powered=true,length=4":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=south,powered=true,length=7":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=north,powered=true,length=8":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=north,powered=false,length=4":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=west,powered=false,length=2":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=west,powered=false,length=4":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=south,powered=true,length=8":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=east,powered=true,length=5":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=south,powered=true,length=4":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=east,powered=false,length=2":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=north,powered=false,length=5":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=west,powered=false,length=1":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=east,powered=true,length=8":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=east,powered=true,length=2":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=east,powered=false,length=8":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=west,powered=false,length=6":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=north,powered=true,length=7":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=west,powered=true,length=6":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=south,powered=false,length=2":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=east,powered=true,length=6":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=north,powered=true,length=3":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=south,powered=false,length=6":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=east,powered=false,length=1":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=north,powered=true,length=4":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=north,powered=false,length=1":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=south,powered=true,length=1":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=south,powered=false,length=7":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=east,powered=false,length=7":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            },
+                     "facing=north,powered=true,length=5":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=north,powered=false,length=6":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=south,powered=true,length=3":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=west,powered=false,length=5":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=south,powered=true,length=5":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=east,powered=true,length=3":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=west,powered=true,length=2":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=south,powered=true,length=2":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=north,powered=false,length=7":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=west,powered=true,length=1":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=north,powered=true,length=2":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=south,powered=true,length=6":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  180
+                                                            },
+                     "facing=east,powered=true,length=7":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=west,powered=true,length=8":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=south,powered=false,length=8":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=north,powered=false,length=8":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=west,powered=false,length=3":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=south,powered=false,length=3":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=west,powered=true,length=5":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  270
+                                                           },
+                     "facing=north,powered=false,length=2":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  0
+                                                             },
+                     "facing=east,powered=true,length=1":  {
+                                                               "model":  "rail_deco:block/crossing_gate_lower",
+                                                               "y":  90
+                                                           },
+                     "facing=south,powered=false,length=4":  {
+                                                                 "model":  "rail_deco:block/crossing_gate_lower",
+                                                                 "y":  180
+                                                             },
+                     "facing=north,powered=true,length=1":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  0
+                                                            },
+                     "facing=west,powered=false,length=8":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  270
+                                                            },
+                     "facing=east,powered=false,length=3":  {
+                                                                "model":  "rail_deco:block/crossing_gate_lower",
+                                                                "y":  90
+                                                            }
+                 }
 }

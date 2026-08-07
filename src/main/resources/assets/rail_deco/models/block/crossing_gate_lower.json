@@ -1,0 +1,11 @@
+{
+  "textures": {
+    "base": "rail_deco:block/crossing_gate_base",
+    "pole": "rail_deco:block/crossing_gate_pole",
+    "particle": "rail_deco:block/crossing_gate_pole"
+  },
+  "elements": [
+    { "from": [6.25, 0, 5.75], "to": [9.75, 6, 9.25], "faces": { "north": { "uv": [0,0,16,16], "texture": "#base" }, "south": { "uv": [0,0,16,16], "texture": "#base" }, "east": { "uv": [0,0,16,16], "texture": "#base" }, "west": { "uv": [0,0,16,16], "texture": "#base" }, "up": { "uv": [0,0,16,16], "texture": "#base" }, "down": { "uv": [0,0,16,16], "texture": "#base" } } },
+    { "from": [6.5, 0, 6], "to": [9.5, 12, 9], "faces": { "north": { "uv": [0,0,16,16], "texture": "#pole" }, "south": { "uv": [0,0,16,16], "texture": "#pole" }, "east": { "uv": [0,0,16,16], "texture": "#pole" }, "west": { "uv": [0,0,16,16], "texture": "#pole" }, "up": { "uv": [0,0,16,16], "texture": "#pole" }, "down": { "uv": [0,0,16,16], "texture": "#pole" } } }
+  ]
+}

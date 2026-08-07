@@ -1,21 +1,9 @@
 {
   "textures": {
-    "gate": "rail_deco:block/ticket_gate_0",
-    "metal": "rail_deco:block/ticket_gate",
-    "particle": "rail_deco:block/ticket_gate_0"
+    "gate": "rail_deco:block/turnstile",
+    "particle": "rail_deco:block/turnstile"
   },
   "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 16],
-      "faces": {
-        "north": { "uv": [0, 0, 512, 512], "texture": "#gate" },
-        "south": { "uv": [0, 0, 512, 512], "texture": "#gate" },
-        "east": { "uv": [0, 16, 16, 32], "texture": "#metal" },
-        "west": { "uv": [0, 16, 16, 32], "texture": "#metal" },
-        "up": { "uv": [0, 16, 16, 32], "texture": "#metal" },
-        "down": { "uv": [0, 16, 16, 32], "texture": "#metal" }
-      }
-    }
+    { "from": [0, 0, 0], "to": [16, 16, 16], "faces": { "north": { "uv": [0,0,512,512], "texture": "#gate" }, "south": { "uv": [0,0,512,512], "texture": "#gate" }, "east": { "uv": [0,0,512,512], "texture": "#gate" }, "west": { "uv": [0,0,512,512], "texture": "#gate" }, "up": { "uv": [0,0,512,512], "texture": "#gate" }, "down": { "uv": [0,0,512,512], "texture": "#gate" } } }
   ]
 }

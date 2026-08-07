@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "pole": "rail_deco:block/crossing_gate_pole",
+    "housing": "rail_deco:block/crossing_gate_housing",
+    "counterweight": "rail_deco:block/crossing_gate_counterweight",
+    "particle": "rail_deco:block/crossing_gate_pole"
+  },
+  "elements": [
+    { "from": [6.5, 0, 6], "to": [9.5, 4, 9], "faces": { "north": { "uv": [0,0,16,16], "texture": "#pole" }, "south": { "uv": [0,0,16,16], "texture": "#pole" }, "east": { "uv": [0,0,16,16], "texture": "#pole" }, "west": { "uv": [0,0,16,16], "texture": "#pole" }, "up": { "uv": [0,0,16,16], "texture": "#pole" }, "down": { "uv": [0,0,16,16], "texture": "#pole" } } },
+    { "from": [4, 0, 2], "to": [12, 8, 10], "faces": { "north": { "uv": [0,0,16,16], "texture": "#housing" }, "south": { "uv": [0,0,16,16], "texture": "#housing" }, "east": { "uv": [0,0,16,16], "texture": "#housing" }, "west": { "uv": [0,0,16,16], "texture": "#housing" }, "up": { "uv": [0,0,16,16], "texture": "#housing" }, "down": { "uv": [0,0,16,16], "texture": "#housing" } } },
+    { "from": [4, 8, 7], "to": [12, 9.5, 10], "faces": { "north": { "uv": [0,0,16,16], "texture": "#housing" }, "south": { "uv": [0,0,16,16], "texture": "#housing" }, "east": { "uv": [0,0,16,16], "texture": "#housing" }, "west": { "uv": [0,0,16,16], "texture": "#housing" }, "up": { "uv": [0,0,16,16], "texture": "#housing" }, "down": { "uv": [0,0,16,16], "texture": "#housing" } } },
+    { "from": [4, 7.7, 2], "to": [8, 8.7, 8], "faces": { "north": { "uv": [0,0,16,16], "texture": "#counterweight" }, "south": { "uv": [0,0,16,16], "texture": "#counterweight" }, "east": { "uv": [0,0,16,16], "texture": "#counterweight" }, "west": { "uv": [0,0,16,16], "texture": "#counterweight" }, "up": { "uv": [0,0,16,16], "texture": "#counterweight" }, "down": { "uv": [0,0,16,16], "texture": "#counterweight" } } },
+    { "from": [8, 7.7, 2], "to": [12, 8.7, 8], "faces": { "north": { "uv": [0,0,16,16], "texture": "#counterweight" }, "south": { "uv": [0,0,16,16], "texture": "#counterweight" }, "east": { "uv": [0,0,16,16], "texture": "#counterweight" }, "west": { "uv": [0,0,16,16], "texture": "#counterweight" }, "up": { "uv": [0,0,16,16], "texture": "#counterweight" }, "down": { "uv": [0,0,16,16], "texture": "#counterweight" } } }
+  ]
+}

@@ -16,15 +16,15 @@ public final class ClientModEvents {
 
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.CROSSING_GATE.get(), CrossingGateBlockEntityRenderer::new);
+        RailDeco.LOGGER.info("[RailDeco] registered crossing gate block entity renderer");
     }
 
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(standaloneModel("block/crossing_gate_pole"));
-        event.register(standaloneModel("block/crossing_gate_pole_top"));
-        event.register(standaloneModel("block/crossing_gate_lamp_unit"));
+        event.register(standaloneModel("block/crossing_gate_lower"));
+        event.register(standaloneModel("block/crossing_gate_upper"));
         event.register(standaloneModel("block/crossing_gate_arm"));
-        event.register(standaloneModel("block/crossing_gate_counterweight"));
         event.register(standaloneModel("block/crossing_gate_lamp_glow"));
+        RailDeco.LOGGER.info("[RailDeco] registered crossing gate models");
     }
 
     private static ModelResourceLocation standaloneModel(String path) {
