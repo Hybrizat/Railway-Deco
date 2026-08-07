@@ -12,6 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 /** ??????????????????? */
 public class CrossingGateFullBlockEntity extends BlockEntity {
     public static final int FLASH_PERIOD = 14;
+    /** ???????tick????????? */
+    public static final int SOUND_PERIOD = 10;
 
     public CrossingGateFullBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.CROSSING_GATE_FULL.get(), pos, state);
@@ -24,7 +26,7 @@ public class CrossingGateFullBlockEntity extends BlockEntity {
             level.setBlock(pos, state.setValue(CrossingGateFullBlock.POWERED, powered), 3);
             return;
         }
-        if (powered && level.getGameTime() % FLASH_PERIOD == 0) {
+        if (powered && level.getGameTime() % SOUND_PERIOD == 0) {
             level.playSound(null, pos, ModSounds.FUMIGIRI.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
         }
     }
