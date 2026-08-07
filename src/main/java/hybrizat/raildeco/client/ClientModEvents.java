@@ -20,9 +20,7 @@ public final class ClientModEvents {
     }
 
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(standaloneModel("block/crossing_gate_lower"));
-        event.register(standaloneModel("block/crossing_gate_upper"));
-        event.register(standaloneModel("block/crossing_gate_arm"));
+        event.register(standaloneModel("block/crossing_gate_body_short"));
         event.register(standaloneModel("block/crossing_gate_lamp_glow"));
         RailDeco.LOGGER.info("[RailDeco] registered crossing gate models");
     }
