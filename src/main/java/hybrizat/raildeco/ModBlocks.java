@@ -30,6 +30,13 @@ public final class ModBlocks {
             .sound(SoundType.METAL)
             .noOcclusion()));
 
+    /** ??????? cr1??? 3.8 ???????????????? */
+    public static final DeferredBlock<Block> CROSSING_GATE_FULL = BLOCKS.register("crossing_signal",
+        () -> new CrossingGateFullBlock(BlockBehaviour.Properties.of()
+            .strength(2.0F)
+            .sound(SoundType.METAL)
+            .noOcclusion()));
+
     /** 站台边缘：低矮的黄色盲道/边界方块。 */
     public static final DeferredBlock<Block> PLATFORM_EDGE = BLOCKS.register("platform_edge",
         () -> new PlatformEdgeBlock(BlockBehaviour.Properties.of()

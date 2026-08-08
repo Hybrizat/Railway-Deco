@@ -3,5 +3,6 @@
   "block.rail_deco.ticket_gate": "Ticket Gate",
   "block.rail_deco.crossing_gate": "Crossing Gate",
   "block.rail_deco.crossing_gate.tooltip": "Right-click placed gate to cycle barrier length (1-8).\nRedstone signal lowers the barrier, flashes the lights and rings the bell.",
-  "block.rail_deco.platform_edge": "Platform Edge"
+  "block.rail_deco.platform_edge": "Platform Edge",
+  "block.rail_deco.crossing_signal": "Crossing Signal"
 }

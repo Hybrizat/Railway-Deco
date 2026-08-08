@@ -3,6 +3,7 @@
   "values": [
     "rail_deco:ticket_gate",
     "rail_deco:crossing_gate",
-    "rail_deco:platform_edge"
+    "rail_deco:platform_edge",
+    "rail_deco:crossing_signal"
   ]
 }

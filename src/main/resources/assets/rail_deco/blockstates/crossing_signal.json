@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "facing=north,powered=false": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 0
+    },
+    "facing=north,powered=true": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 0
+    },
+    "facing=east,powered=false": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 90
+    },
+    "facing=south,powered=false": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "rail_deco:block/crossing_gate_full_item",
+      "y": 270
+    }
+  }
+}

@@ -15,6 +15,10 @@ public final class ModBlockEntityTypes {
         BLOCK_ENTITY_TYPES.register("crossing_gate",
             () -> BlockEntityType.Builder.of(CrossingGateBlockEntity::new, ModBlocks.CROSSING_GATE.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrossingGateFullBlockEntity>> CROSSING_GATE_FULL =
+        BLOCK_ENTITY_TYPES.register("crossing_signal",
+            () -> BlockEntityType.Builder.of(CrossingGateFullBlockEntity::new, ModBlocks.CROSSING_GATE_FULL.get()).build(null));
+
     private ModBlockEntityTypes() {
     }
 
