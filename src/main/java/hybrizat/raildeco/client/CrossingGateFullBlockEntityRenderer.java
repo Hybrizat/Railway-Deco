@@ -50,22 +50,22 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private static final List<Cube> LIGHT_OFF_RIGHT = new ArrayList<>();
     private static boolean parsed = false;
 
-    /** ??????? alpha ????????????????????????? */
-    private static final RenderType NO_CULL_SOLID = RenderType.create(
-            "rail_deco_cr1_solid_nocull",
+    /** ?????????????????????? */
+    private static final RenderType LIGHT_TRANSLUCENT = RenderType.create(
+            "rail_deco_cr1_lamp_translucent",
             DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS,
             262144,
             false,
-            false,
+            true,
             RenderType.CompositeState.builder()
-                    .setShaderState(RenderType.RENDERTYPE_SOLID_SHADER)
+                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
-                    .setTransparencyState(RenderType.NO_TRANSPARENCY)
+                    .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
                     .setCullState(RenderType.NO_CULL)
                     .setLightmapState(RenderType.LIGHTMAP)
                     .setOverlayState(RenderType.OVERLAY)
-                    .createCompositeState(false));
+                    .createCompositeState(true));
 
     /** ?????? cutout ???????/??????????????????????? */
     private static final RenderType NO_CULL_CUTOUT = RenderType.create(
@@ -264,39 +264,46 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
 
         // ?????????
         for (Cube cube : STATIC_CUBES) {
-            drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F);
+            drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
         }
-        // ????? alpha ????????????????????????/???
-        VertexConsumer lightVertices = buffer.getBuffer(NO_CULL_SOLID);
-        // ????????????? <-> ????????????????/??????
-        if (powered && phaseA) {
-            for (Cube cube : LIGHT_ON_LEFT) {
-                drawCube(lightVertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-        } else if (powered) {
-            for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_ON_RIGHT) {
-                drawCube(lightVertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
-            }
-        } else {
-            for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-            for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
-            }
-        }
+        // ????????????????????????????????????
+        // ??????????????????????????????????
+        // ?????????? <-> ?????????????
+        VertexConsumer lightVertices = buffer.getBuffer(LIGHT_TRANSLUCENT);
+        boolean leftLit = powered && phaseA;
+        boolean rightLit = powered && !phaseA;
+        drawLamp(lightVertices, pose, LIGHT_ON_LEFT, LIGHT_OFF_LEFT, leftLit, packedLight, packedOverlay);
+        drawLamp(lightVertices, pose, LIGHT_ON_RIGHT, LIGHT_OFF_RIGHT, rightLit, packedLight, packedOverlay);
 
         pose.popPose();
     }
 
+    /** ?????????????????????????????lit=true ???????????? */
+    private void drawLamp(VertexConsumer vertices, PoseStack pose,
+                          List<Cube> onCubes, List<Cube> offCubes, boolean lit,
+                          int packedLight, int packedOverlay) {
+        int light = lit ? LightTexture.FULL_BRIGHT : packedLight;
+        if (lit) {
+            // ?????z ?? 0???????z ?? +1 -> ? -1.1 ?? -0.1 ?????????? -1.1?
+            for (Cube cube : offCubes) {
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
+            }
+            for (Cube cube : onCubes) {
+                drawCube(vertices, pose, cube, light, packedOverlay, 0.0F);
+            }
+        } else {
+            // ?????z ?? +1 -> ? -1.1 ?? -0.1???????z ?? -1 -> ? -0.1 ?? -1.1?
+            for (Cube cube : onCubes) {
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, -1.0F);
+            }
+            for (Cube cube : offCubes) {
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F);
+            }
+        }
+    }
+
     private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay,
-                          float tintR, float tintG, float tintB) {
+                          float zOffset) {
         float[] o = cube.origin, s = cube.size, p = cube.pivot, r = cube.rotation;
         // 8 ??????????
         float[][] corners = new float[8][3];
@@ -313,7 +320,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                     rotateAround(v, 2, r[2], p);
                     v[0] += offsetX;
                     v[1] += offsetY;
-                    v[2] += offsetZ;
+                    v[2] += offsetZ + zOffset;
                     corners[idx++] = v;
                 }
             }
@@ -326,23 +333,17 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
             float u1 = uv[2] / 128.0F, v1 = uv[3] / 128.0F;
             switch (dir) {
                 case "south" -> quad(vertices, pose, packedLight, packedOverlay, 0, 0, 1,
-                        corners[4], corners[5], corners[7], corners[6], u0, v1, u1, v1, u1, v0, u0, v0,
-                        tintR, tintG, tintB);
+                        corners[4], corners[5], corners[7], corners[6], u0, v1, u1, v1, u1, v0, u0, v0);
                 case "north" -> quad(vertices, pose, packedLight, packedOverlay, 0, 0, -1,
-                        corners[1], corners[0], corners[2], corners[3], u0, v1, u1, v1, u1, v0, u0, v0,
-                        tintR, tintG, tintB);
+                        corners[1], corners[0], corners[2], corners[3], u0, v1, u1, v1, u1, v0, u0, v0);
                 case "east" -> quad(vertices, pose, packedLight, packedOverlay, 1, 0, 0,
-                        corners[5], corners[7], corners[3], corners[1], u0, v1, u0, v0, u1, v0, u1, v1,
-                        tintR, tintG, tintB);
+                        corners[5], corners[7], corners[3], corners[1], u0, v1, u0, v0, u1, v0, u1, v1);
                 case "west" -> quad(vertices, pose, packedLight, packedOverlay, -1, 0, 0,
-                        corners[0], corners[2], corners[6], corners[4], u0, v1, u0, v0, u1, v0, u1, v1,
-                        tintR, tintG, tintB);
+                        corners[0], corners[2], corners[6], corners[4], u0, v1, u0, v0, u1, v0, u1, v1);
                 case "up" -> quad(vertices, pose, packedLight, packedOverlay, 0, 1, 0,
-                        corners[2], corners[6], corners[7], corners[3], u0, v0, u0, v1, u1, v1, u1, v0,
-                        tintR, tintG, tintB);
+                        corners[2], corners[6], corners[7], corners[3], u0, v0, u0, v1, u1, v1, u1, v0);
                 case "down" -> quad(vertices, pose, packedLight, packedOverlay, 0, -1, 0,
-                        corners[4], corners[0], corners[1], corners[5], u0, v0, u0, v1, u1, v1, u1, v0,
-                        tintR, tintG, tintB);
+                        corners[4], corners[0], corners[1], corners[5], u0, v0, u0, v1, u1, v1, u1, v0);
             }
         }
     }
@@ -379,21 +380,19 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private void quad(VertexConsumer vertices, PoseStack pose, int packedLight, int packedOverlay,
                       float nx, float ny, float nz,
                       float[] a, float[] b, float[] c, float[] d,
-                      float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3,
-                      float tintR, float tintG, float tintB) {
-        addVertex(vertices, pose, a[0], a[1], a[2], u0, v0, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
-        addVertex(vertices, pose, b[0], b[1], b[2], u1, v1, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
-        addVertex(vertices, pose, c[0], c[1], c[2], u2, v2, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
-        addVertex(vertices, pose, d[0], d[1], d[2], u3, v3, nx, ny, nz, packedLight, packedOverlay, tintR, tintG, tintB);
+                      float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3) {
+        addVertex(vertices, pose, a[0], a[1], a[2], u0, v0, nx, ny, nz, packedLight, packedOverlay);
+        addVertex(vertices, pose, b[0], b[1], b[2], u1, v1, nx, ny, nz, packedLight, packedOverlay);
+        addVertex(vertices, pose, c[0], c[1], c[2], u2, v2, nx, ny, nz, packedLight, packedOverlay);
+        addVertex(vertices, pose, d[0], d[1], d[2], u3, v3, nx, ny, nz, packedLight, packedOverlay);
     }
 
     private void addVertex(VertexConsumer vertices, PoseStack pose,
                            float x, float y, float z, float u, float v,
-                           float nx, float ny, float nz, int packedLight, int packedOverlay,
-                           float tintR, float tintG, float tintB) {
+                           float nx, float ny, float nz, int packedLight, int packedOverlay) {
         vertices.addVertex(pose.last(), x, y, z)
                 .setUv(sprite.getU(u / 16.0F), sprite.getV(v / 16.0F))
-                .setColor(tintR, tintG, tintB, 1.0F)
+                .setColor(1.0F, 1.0F, 1.0F, 1.0F)
                 .setNormal(pose.last(), nx, ny, nz)
                 .setLight(packedLight)
                 .setOverlay(packedOverlay);
