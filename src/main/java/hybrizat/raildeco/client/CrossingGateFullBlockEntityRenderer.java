@@ -57,7 +57,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
             VertexFormat.Mode.QUADS,
             262144,
             false,
-            true,
+            false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
