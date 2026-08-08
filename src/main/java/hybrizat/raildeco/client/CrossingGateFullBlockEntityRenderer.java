@@ -284,20 +284,20 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                           int packedLight, int packedOverlay) {
         int light = lit ? LightTexture.FULL_BRIGHT : packedLight;
         if (lit) {
-            // ?????z ?? 0???????z ?? +1 -> ? -1.1 ?? -0.1 ?????????? -1.1?
-            for (Cube cube : offCubes) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
-            }
-            for (Cube cube : onCubes) {
-                drawCube(vertices, pose, cube, light, packedOverlay, 0.0F);
-            }
-        } else {
-            // ?????z ?? +1 -> ? -1.1 ?? -0.1???????z ?? -1 -> ? -0.1 ?? -1.1?
-            for (Cube cube : onCubes) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, -1.0F);
-            }
+            // ???? -z??????????? -1.1???????? -0.1???
             for (Cube cube : offCubes) {
                 drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F);
+            }
+            for (Cube cube : onCubes) {
+                drawCube(vertices, pose, cube, light, packedOverlay, -1.0F);
+            }
+        } else {
+            // ??????????? -1.1???????? -0.1???
+            for (Cube cube : onCubes) {
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
+            }
+            for (Cube cube : offCubes) {
+                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
             }
         }
     }
