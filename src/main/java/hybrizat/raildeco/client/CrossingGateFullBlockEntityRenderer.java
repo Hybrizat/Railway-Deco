@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * ??????? OCR ? cr1???????????????? Bedrock ?????
- * ??????????????????????????????????
- * ??????/??????
+ * 整体踏切（参考 OCR 的 cr1）渲染器：运行时读取随模组打包的 Bedrock 几何文件，
+ * 程序化绘制全部立方体（含扇状复制与任意旋转，原版方块模型无法表达），
+ * 通电时警灯明/灭交替闪烁。
  */
 public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<CrossingGateFullBlockEntity> {
 
-    /** ???? = ???? + ?????????????????????? */
+    /** 模型单位 = 参考坐标 + 偏移（由几何包围盒自动计算，居中并对齐地面） */
     private static float offsetX = 8.0F;
     private static float offsetY = 0.0F;
     private static float offsetZ = 8.0F;
@@ -50,7 +50,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private static final List<Cube> LIGHT_OFF_RIGHT = new ArrayList<>();
     private static boolean parsed = false;
 
-    /** ?????????????????????? */
+    /** 无背面剔除、无 alpha 测试的渲染：用于警灯面，避免贴图半透明导致面被裁掉 */
     private static final RenderType LIGHT_TRANSLUCENT = RenderType.create(
             "rail_deco_cr1_lamp_translucent",
             DefaultVertexFormat.BLOCK,
@@ -67,7 +67,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                     .setOverlayState(RenderType.OVERLAY)
                     .createCompositeState(true));
 
-    /** ?????? cutout ???????/??????????????????????? */
+    /** 无背面剔除的 cutout 渲染（部分旋转/薄片面在特定角度会被剔除导致透明，故关闭剔除） */
     private static final RenderType NO_CULL_CUTOUT = RenderType.create(
             "rail_deco_cr1_cutout_nocull",
             DefaultVertexFormat.BLOCK,
@@ -121,7 +121,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                     JsonObject bone = boneEl.getAsJsonObject();
                     String boneName = bone.get("name").getAsString().toLowerCase(Locale.ROOT);
                     if (boneName.startsWith("meiban")) {
-                        // ??????????????
+                        // 静态部分：正常着色
                         continue;
                     }
                     boolean isKeihyo = boneName.startsWith("keihyo");
@@ -139,14 +139,14 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                         float[] size = readFloat3(c, "size");
                         float[] pivot = readFloat3(c, "pivot");
                         float[] rotation = readFloat3(c, "rotation");
-                        // ?????keihyo????????? X ??????????????
-                        // ??? x/z ??????????????
+                        // 顶部警标（keihyo，两块交叉板组成的 X 形）在参考模型里垂直于灯面，
+                        // 这里把 x/z 转置，使其与灯平行、朝向道路
                         if (isKeihyo) {
                             origin = new float[]{origin[2], origin[1], origin[0]};
                             size = new float[]{size[2], size[1], size[0]};
                             pivot = new float[]{pivot[2], pivot[1], pivot[0]};
                             rotation = new float[]{0.0F, 0.0F, rotation[0]};
-                            // ????? 0.05 -> 0.5????????
+                            // 加厚：薄面 0.05 -> 0.5，并保持中心位置
                             if (size[2] < 0.5F) {
                                 float delta = (0.5F - size[2]) / 2.0F;
                                 origin[2] -= delta;
@@ -169,7 +169,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                             float[] uvSize = readFloat2(face, "uv_size");
                             String mappedDir = dir;
                             if (isKeihyo) {
-                                // x<->z ????north<->west, south<->east
+                                // x<->z 转置后：north<->west, south<->east
                                 mappedDir = switch (dir) {
                                     case "north" -> "west";
                                     case "south" -> "east";
@@ -177,7 +177,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                                     case "west" -> "north";
                                     default -> dir;
                                 };
-                                // ????????????????????east???????????
+                                // 两块板的正反两面都用同一张黄黑条纹（原“east”大面），避免背面纯黄
                                 if (dir.equals("east")) {
                                     keihyoStripeUv = new float[]{uvOrigin[0], uvOrigin[1], uvOrigin[0] + uvSize[0], uvOrigin[1] + uvSize[1]};
                                 } else if (dir.equals("west")) {
@@ -190,7 +190,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                             cube.faces.add(new String[]{mappedDir});
                             cube.faceUvs.add(new float[]{uvOrigin[0], uvOrigin[1], uvOrigin[0] + uvSize[0], uvOrigin[1] + uvSize[1]});
                         }
-                        // ????????
+                        // 铭牌贴图区域已删除，不再绘制
                         float x0 = origin[0], y0 = origin[1], z0 = origin[2];
                         float x1 = origin[0] + size[0], y1 = origin[1] + size[1], z1 = origin[2] + size[2];
                         minX = Math.min(minX, x0); maxX = Math.max(maxX, x1);
@@ -256,19 +256,19 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         VertexConsumer vertices = buffer.getBuffer(NO_CULL_CUTOUT);
 
         pose.pushPose();
-        // ??? +X ? ?????????????FACING ????
+        // 参考系 +X → 玩家放置时面朝的道路方向（FACING 的反向）
         pose.translate(0.5, 0.0, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(facing.getOpposite().toYRot()));
         pose.translate(-0.5, 0.0, -0.5);
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
-        // ?????????
+        // 警灯面用半透明混合渲染
         for (Cube cube : STATIC_CUBES) {
             drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
         }
-        // ????????????????????????????????????
-        // ??????????????????????????????????
-        // ?????????? <-> ?????????????
+        // 参考原版逻辑：亮灯片（半透明红）与暗灯片（不透明暗红）两块薄片始终都在，
+        // 通电时亮灯片在前（叠加在暗红底上产生发光感），灭灯时暗红片在前遮挡。
+        // 两盏灯轮流：左亮右灭 <-> 左灭右亮；未通电两盏都灭。
         VertexConsumer lightVertices = buffer.getBuffer(LIGHT_TRANSLUCENT);
         boolean leftLit = powered && phaseA;
         boolean rightLit = powered && !phaseA;
@@ -278,13 +278,13 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         pose.popPose();
     }
 
-    /** ?????????????????????????????lit=true ???????????? */
+    /** 绘制一盏警灯：亮灯片（半透明红）与暗灯片（暗红）前后交错。lit=true 时亮片在前，否则暗片在前 */
     private void drawLamp(VertexConsumer vertices, PoseStack pose,
                           List<Cube> onCubes, List<Cube> offCubes, boolean lit,
                           int packedLight, int packedOverlay) {
         int light = lit ? LightTexture.FULL_BRIGHT : packedLight;
         if (lit) {
-            // ???? -z??????????? -1.1???????? -0.1???
+            // 可见侧为 -z：亮片（半透明红）移到 -1.1（前），暗片退到 -0.1（后）
             for (Cube cube : offCubes) {
                 drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F);
             }
@@ -292,7 +292,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
                 drawCube(vertices, pose, cube, light, packedOverlay, -1.0F);
             }
         } else {
-            // ??????????? -1.1???????? -0.1???
+            // 暗片（不透明暗红）停在 -1.1（前），亮片停在 -0.1（后）
             for (Cube cube : onCubes) {
                 drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F);
             }
@@ -305,7 +305,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private void drawCube(VertexConsumer vertices, PoseStack pose, Cube cube, int packedLight, int packedOverlay,
                           float zOffset) {
         float[] o = cube.origin, s = cube.size, p = cube.pivot, r = cube.rotation;
-        // 8 ??????????
+        // 8 个角（先旋转再偏移）
         float[][] corners = new float[8][3];
         int idx = 0;
         for (int dz = 0; dz <= 1; dz++) {
@@ -328,7 +328,7 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         for (int i = 0; i < cube.faces.size(); i++) {
             String dir = cube.faces.get(i)[0];
             float[] uv = cube.faceUvs.get(i);
-            // u0,v0 = ????????? 0~16 ?? UV??? / 128?2048 ???
+            // u0,v0 = 左上（像素），转为 0~16 模型 UV：像素 / 128（2048 贴图）
             float u0 = uv[0] / 128.0F, v0 = uv[1] / 128.0F;
             float u1 = uv[2] / 128.0F, v1 = uv[3] / 128.0F;
             switch (dir) {

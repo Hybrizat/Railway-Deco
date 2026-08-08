@@ -30,7 +30,7 @@ public final class ModBlocks {
             .sound(SoundType.METAL)
             .noOcclusion()));
 
-    /** ??????? cr1??? 3.8 ???????????????? */
+    /** 整体踏切（参考 cr1）：约 3.8 格高，红石通电警灯闪烁、警铃响起 */
     public static final DeferredBlock<Block> CROSSING_GATE_FULL = BLOCKS.register("crossing_signal",
         () -> new CrossingGateFullBlock(BlockBehaviour.Properties.of()
             .strength(2.0F)

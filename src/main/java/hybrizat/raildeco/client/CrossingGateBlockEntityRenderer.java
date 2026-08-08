@@ -26,37 +26,37 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 /**
- * ???????????/???????????OCR / ?????? Addon????????
- * ????????????? 32 ????????????????????????
+ * 踏切遮断机渲染器：机身/机壳直接复用参考实现（OCR / 大宫铁道踏切 Addon）的模型与贴图，
+ * 遮断臂因长度可超过原版模型 32 单位上限，改为程序化绘制（条纹按参考比例平铺）。
  *
- * <p>??????????+X ??????????????????????
- * ????????????????????????????????????????????
+ * <p>模型采用参考坐标系（+X 为遮断臂伸出方向），朝向由本渲染器统一换算：
+ * 玩家放置时面朝的道路方向即遮断臂指向，红石通电后遮断臂落下、警灯闪烁、警铃由服务端播放。
  */
 public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<CrossingGateBlockEntity> {
-    /** ?????????????? */
+    /** 遮断臂完全抬起（未通电）角度 */
     private static final float ARM_UP_ANGLE = 90.0F;
-    /** ???????????????? */
+    /** 遮断臂落下（通电遮断）角度：水平 */
     private static final float ARM_DOWN_ANGLE = 0.0F;
 
-    /** ? LENGTH(1~8) ????????????????????????? crgt_a1m_l ~ crgt_a8m_l */
+    /** 各 LENGTH(1~8) 对应的遮断臂长度（模型单位，铰点到杆尖），取自参考 crgt_a1m_l ~ crgt_a8m_l */
     private static final float[] ARM_LENGTHS = {19.5F, 29.5F, 45.5F, 61.5F, 77.5F, 92.5F, 108.5F, 124.5F};
 
-    /** ??????? = ???? + ?? (8, 0, 9.25)? */
+    /** 铰点（模型坐标 = 参考坐标 + 偏移 (8, 0, 9.25)） */
     private static final float HINGE_X = 8.5F;
     private static final float HINGE_Y = 17.5F;
     private static final float HINGE_Z = 12.25F;
 
-    /** ?????????? 2.7x1.3 ?????????y 15-19, z 11.25-12.75??? 0.1 ?????? */
+    /** 遮断臂截面：加粗到约 2.7x1.3 单位，并相对机壳（y 15-19, z 11.25-12.75）内缩 0.1 避免共面闪烁 */
     private static final float ARM_H = 2.7F, ARM_W = 1.3F, ARM_Y = 16.15F;
-    /** ??? Z ????? 2.75 + 9.25? */
+    /** 遮断臂 Z 中心（参考 2.75 + 9.25） */
     private static final float ARM_Z_CENTER = 12.0F;
 
-    /** ???????2048 ???uv = ?? / 128?????? 447~450 ???? 7px = 7 ?? */
+    /** 臂面条纹贴图（2048 贴图，uv = 像素 / 128）：条纹位于 447~450 行，周期 7px = 7 单位 */
     private static final float STRIPE_U0 = 1.0F / 128.0F;
     private static final float STRIPE_PERIOD = 7.0F;
     private static final float STRIPE_V0 = 447.0F / 128.0F;
     private static final float STRIPE_V1 = 450.0F / 128.0F;
-    /** ?????/??/?????? (98,22) ??? */
+    /** 黑色（配重/臂端/顶底），取自 (98,22) 单像素 */
     private static final float BLACK_U = 98.0F / 128.0F;
     private static final float BLACK_V = 22.0F / 128.0F;
 
@@ -134,16 +134,16 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         VertexConsumer vertices = buffer.getBuffer(RenderType.solid());
 
         pose.pushPose();
-        // ??? +X?????? ?????????????FACING ????
+        // 参考系 +X（遮断臂）→ 玩家放置时面朝的道路方向（FACING 的反向）
         pose.translate(0.5, 0.0, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(facing.getOpposite().toYRot() - 90.0F));
         pose.translate(-0.5, 0.0, -0.5);
 
-        // ?????????????????0~1?????????
-        // ????? + ?? + ????
+        // 烘焙模型的面坐标已按“格”为单位（0~1），这里不能再缩放
+        // 机身（立柱 + 机壳 + 铭板等）
         renderBakedModel(bodyModel, state, pose, vertices, packedLight, packedOverlay);
 
-        // ???????????????????????????????????????
+        // 警灯：通电时在机壳正面闪烁（模型单位换算到格，整体置于机壳面板之前避免被遮挡）
         if (powered) {
             boolean leftOn = ((long) time / CrossingGateBlockEntity.FLASH_PERIOD) % 2 == 0;
             if (leftOn) {
@@ -154,7 +154,7 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
             }
         }
 
-        // ????????????????0~16 = 1 ??????? 1/16?cutout ???? mipmap ??????
+        // 遮断臂：程序化绘制使用模型单位（0~16 = 1 格），单独缩放 1/16；cutout 渲染避免 mipmap 把细条纹糊掉
         VertexConsumer armVertices = buffer.getBuffer(RenderType.cutout());
         pose.pushPose();
         pose.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
@@ -168,8 +168,8 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
     }
 
     /**
-     * ????????????? +X ???????? 7 ??????????/????
-     * ???????? ? 6 ??????????/??????????????
+     * 程序化绘制遮断臂：从铰点沿 +X 伸出。南北两面按 7 单位分段平铺参考的橙/黑条纹，
+     * 其余面黑色；长度 ≥ 6 时把参考模型中的配重/支撑件一并绘制（随臂旋转）。
      */
     private void drawArm(VertexConsumer vertices, PoseStack pose, int length, int packedLight, int packedOverlay) {
         float len = ARM_LENGTHS[length - 1];
@@ -180,26 +180,26 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         float x0 = HINGE_X;
         float x1 = x0 + len;
 
-        // ??????????????????????????
+        // 南北两面：分段平铺条纹，保证每个周期都从条纹起点开始
         for (float xs = x0; xs < x1; xs += STRIPE_PERIOD) {
             float xe = Math.min(xs + STRIPE_PERIOD, x1);
             float u0 = STRIPE_U0;
             float u1 = STRIPE_U0 + (xe - xs) / 128.0F;
-            // ???+Z?
+            // 南面（+Z）
             quad(vertices, pose, packedLight, packedOverlay, 0.0F, 0.0F, 1.0F,
                     xs, y0, z1, xe, y0, z1, xe, y1, z1, xs, y1, z1,
                     u0, STRIPE_V1, u1, STRIPE_V1, u1, STRIPE_V0, u0, STRIPE_V0);
-            // ???-Z??u ?? x ??
+            // 北面（-Z），u 仍随 x 增大
             quad(vertices, pose, packedLight, packedOverlay, 0.0F, 0.0F, -1.0F,
                     xe, y0, z0, xs, y0, z0, xs, y1, z0, xe, y1, z0,
                     u1, STRIPE_V1, u0, STRIPE_V1, u0, STRIPE_V0, u1, STRIPE_V0);
         }
 
-        // ?/?/???????????????
+        // 顶/底/两端：黑色（南北面已单独绘制）
         drawBox(vertices, pose, packedLight, packedOverlay, x0, y0, z0, x1, y1, z1,
                 BLACK_U, BLACK_V, false);
 
-        // ??/?????? crgt_a6m+ ? shadankanL ?????????????
+        // 配重/支撑件（参考 crgt_a6m+ 的 shadankanL 附加立方体，随遮断臂旋转）
         if (length >= 6) {
             drawBox(vertices, pose, packedLight, packedOverlay, -3.0F, 16.0F, 11.75F, 6.0F, 17.0F, 12.75F,
                     BLACK_U, BLACK_V, true);
@@ -210,7 +210,7 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         }
     }
 
-    /** ?????????includeNS=false ????????????????????? */
+    /** 绘制一个六面盒体；includeNS=false 时跳过南北面（用于遮断臂，条纹面单独绘制） */
     private void drawBox(VertexConsumer vertices, PoseStack pose, int packedLight, int packedOverlay,
                          float x0, float y0, float z0, float x1, float y1, float z1,
                          float u, float v, boolean includeNS) {
@@ -252,7 +252,7 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
                 .setOverlay(packedOverlay);
     }
 
-    /** ?????? cullface ?????? null??????????????????? */
+    /** 模型面未指定 cullface 时会被烘焙进 null（未剔除）方向，渲染与统计都必须包含它 */
     private static final Direction[] RENDER_DIRECTIONS = {
             null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST
     };
@@ -276,13 +276,13 @@ public class CrossingGateBlockEntityRenderer implements BlockEntityRenderer<Cros
         }
     }
 
-    /** ??????? */
+    /** 下落：先快后慢 */
     private static float easeOutCubic(float p) {
         float q = 1.0F - p;
         return 1.0F - q * q * q;
     }
 
-    /** ??????? */
+    /** 下落：先快后慢 */
     private static float easeInOutCubic(float p) {
         return p < 0.5F ? 4.0F * p * p * p : 1.0F - (float) Math.pow(-2.0F * p + 2.0F, 3.0F) / 2.0F;
     }

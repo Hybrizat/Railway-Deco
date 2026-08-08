@@ -23,7 +23,7 @@ public class CrossingGateBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CrossingGateBlockEntity blockEntity) {
-        // ????????????????????????
+        // 区块重载后重新校验通电状态，避免与红石信号不一致
         boolean powered = level.getBestNeighborSignal(pos) > 0;
         if (powered != state.getValue(CrossingGateBlock.POWERED)) {
             level.setBlock(pos, state.setValue(CrossingGateBlock.POWERED, powered), 3);

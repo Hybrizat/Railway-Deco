@@ -14,18 +14,18 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * JR ??????????????? Metropolis ?????????????
- * ?????? 1 ??????????
+ * JR 风格闸机（纯装饰）。两侧立柱与 Metropolis 开放形态一致，中间可通行。
+ * 碰撞箱高度仅 1 格，随方块朝向旋转。
  */
 public class TicketGateBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<TicketGateBlock> CODEC = simpleCodec(TicketGateBlock::new);
 
-    // 1 ??????????/????? X ????
+    // 1 格高的侧立柱（面朝南/北时分布在 X 轴两侧）
     private static final VoxelShape SHAPE_NORTH_SOUTH = Shapes.or(
-        box(0, 0, 0, 2, 16, 16),  // ????
-        box(14, 0, 0, 16, 16, 16) // ????
+        box(0, 0, 0, 2, 16, 16),  // 左侧立柱
+        box(14, 0, 0, 16, 16, 16) // 右侧立柱
     );
-    // ???/??????? Z ?????? blockstate y ???
+    // 面朝东/西时立柱旋转到 Z 轴两侧（对应 blockstate y 旋转）
     private static final VoxelShape SHAPE_EAST_WEST = Shapes.or(
         box(0, 0, 0, 16, 16, 2),
         box(0, 0, 14, 16, 16, 16)

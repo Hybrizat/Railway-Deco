@@ -11,7 +11,7 @@ public final class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
         DeferredRegister.create(Registries.SOUND_EVENT, RailDeco.MOD_ID);
 
-    /** ?????????? fumigiri.ogg? */
+    /** 踏切警铃（自定义音效 fumigiri.ogg） */
     public static final DeferredHolder<SoundEvent, SoundEvent> FUMIGIRI =
         SOUND_EVENTS.register("fumigiri", () -> SoundEvent.createVariableRangeEvent(RailDeco.id("fumigiri")));
 
