@@ -16,7 +16,8 @@ public final class ClientModEvents {
 
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.CROSSING_GATE.get(), CrossingGateBlockEntityRenderer::new);
-        RailDeco.LOGGER.info("[RailDeco] registered crossing gate block entity renderer");
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.CROSSING_GATE_FULL.get(), CrossingGateFullBlockEntityRenderer::new);
+        RailDeco.LOGGER.info("[RailDeco] registered crossing gate block entity renderers");
     }
 
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {

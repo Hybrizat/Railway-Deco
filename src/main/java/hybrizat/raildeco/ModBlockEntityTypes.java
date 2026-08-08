@@ -1,6 +1,7 @@
 package hybrizat.raildeco;
 
 import hybrizat.raildeco.block.entity.CrossingGateBlockEntity;
+import hybrizat.raildeco.block.entity.CrossingGateFullBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;

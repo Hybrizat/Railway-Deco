@@ -1,6 +1,7 @@
 package hybrizat.raildeco;
 
 import hybrizat.raildeco.block.CrossingGateBlock;
+import hybrizat.raildeco.block.CrossingGateFullBlock;
 import hybrizat.raildeco.block.PlatformEdgeBlock;
 import hybrizat.raildeco.block.TicketGateBlock;
 import net.minecraft.world.item.BlockItem;
@@ -45,6 +46,7 @@ public final class ModBlocks {
 
     public static final DeferredItem<BlockItem> TICKET_GATE_ITEM = ITEMS.registerSimpleBlockItem(TICKET_GATE);
     public static final DeferredItem<BlockItem> CROSSING_GATE_ITEM = ITEMS.registerSimpleBlockItem(CROSSING_GATE);
+    public static final DeferredItem<BlockItem> CROSSING_GATE_FULL_ITEM = ITEMS.registerSimpleBlockItem(CROSSING_GATE_FULL);
     public static final DeferredItem<BlockItem> PLATFORM_EDGE_ITEM = ITEMS.registerSimpleBlockItem(PLATFORM_EDGE);
 
     private ModBlocks() {

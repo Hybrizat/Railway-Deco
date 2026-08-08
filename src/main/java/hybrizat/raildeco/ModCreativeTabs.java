@@ -19,6 +19,7 @@ public final class ModCreativeTabs {
             .displayItems((parameters, output) -> {
                 output.accept(ModBlocks.TICKET_GATE.get());
                 output.accept(ModBlocks.CROSSING_GATE.get());
+                output.accept(ModBlocks.CROSSING_GATE_FULL.get());
                 output.accept(ModBlocks.PLATFORM_EDGE.get());
             })
             .build());
