@@ -50,6 +50,23 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
     private static final List<Cube> LIGHT_OFF_RIGHT = new ArrayList<>();
     private static boolean parsed = false;
 
+    /** ??????? alpha ????????????????????????? */
+    private static final RenderType NO_CULL_SOLID = RenderType.create(
+            "rail_deco_cr1_solid_nocull",
+            DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderType.RENDERTYPE_SOLID_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
+                    .setTransparencyState(RenderType.NO_TRANSPARENCY)
+                    .setCullState(RenderType.NO_CULL)
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .setOverlayState(RenderType.OVERLAY)
+                    .createCompositeState(false));
+
     /** ?????? cutout ???????/??????????????????????? */
     private static final RenderType NO_CULL_CUTOUT = RenderType.create(
             "rail_deco_cr1_cutout_nocull",
@@ -249,27 +266,29 @@ public class CrossingGateFullBlockEntityRenderer implements BlockEntityRenderer<
         for (Cube cube : STATIC_CUBES) {
             drawCube(vertices, pose, cube, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F);
         }
+        // ????? alpha ????????????????????????/???
+        VertexConsumer lightVertices = buffer.getBuffer(NO_CULL_SOLID);
         // ????????????? <-> ????????????????/??????
         if (powered && phaseA) {
             for (Cube cube : LIGHT_ON_LEFT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
         } else if (powered) {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_ON_RIGHT) {
-                drawCube(vertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, LightTexture.FULL_BRIGHT, packedOverlay, 1.0F, 0.0F, 0.0F);
             }
         } else {
             for (Cube cube : LIGHT_OFF_LEFT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
             for (Cube cube : LIGHT_OFF_RIGHT) {
-                drawCube(vertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
+                drawCube(lightVertices, pose, cube, packedLight, packedOverlay, 0.0F, 0.0F, 0.0F);
             }
         }
 
